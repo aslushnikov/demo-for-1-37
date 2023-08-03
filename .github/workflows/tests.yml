@@ -1,0 +1,53 @@
+jobs:
+  playwright-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright browsers
+      run: npx playwright install
+
+    - name: Run Playwright tests
+      run: npx playwright test --fully-parallel --shard ${{ matrix.shard }}/4
+
+    - name: Upload blob report to GitHub Actions Artifacts
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: blob-report-${{ github.run_attempt }}
+        path: blob-report
+        retention-days: 1
+
+  merge-reports:
+    # Merge reports after playwright-tests, even if some shards have failed
+    if: always()
+    needs: [playwright-tests]
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Download blob reports from GitHub Actions Artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: blob-report-${{ github.run_attempt }}
+        path: all-blob-reports
+
+    - name: Merge into HTML Report
+      run: npx playwright merge-reports ./all-blob-reports --reporter html
+
+    - name: Upload HTML report
+      uses: actions/upload-artifact@v3
+      with:
+        name: html-report-${{ github.run_attempt }}
+        path: playwright-report
+
