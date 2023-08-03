@@ -21,7 +21,7 @@ jobs:
       run: npx playwright install
 
     - name: Run Playwright tests
-      run: npx playwright test --fully-parallel --shard ${{ matrix.shard }}/4
+      run: npx playwright test --fully-parallel --shard ${{ matrix.shard }}/4 --reporter blob
 
     - name: Upload blob report to GitHub Actions Artifacts
       if: always()
