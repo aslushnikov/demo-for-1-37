@@ -1,0 +1,8 @@
+- use VSCode
+- use standard `playwright.config.ts`
+  * comment out the `fullyParallel` in the config
+- split demo into 2 parts:
+  * horizontal scaling: fully-parallel + shards. Show shards on github.
+
+  * reporting: how to make reports work across shards. Innovation.
+  * github part.
