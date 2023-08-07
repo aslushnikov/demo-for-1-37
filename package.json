@@ -10,6 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@playwright/test": "^1.37.0-alpha-aug-3-2023"
+    "@playwright/test": "^1.37.0-alpha-aug-7-2023"
   }
 }
